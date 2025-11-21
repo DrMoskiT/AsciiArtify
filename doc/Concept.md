@@ -60,6 +60,8 @@
 ---
 ## 4. Вбудоване демо 
 
+[![asciicast](https://asciinema.org/a/xtNMIgEUuijROt7YMOPURDqDe.svg)](https://asciinema.org/a/xtNMIgEUuijROt7YMOPURDqDe)
+
 Нижче наведено демонстрацію розгортання простого застосунку “Hello World” у кластері **k3d**, який рекомендовано для стартапу.
 
 Інструкція зі встановлення k3d:  
@@ -69,7 +71,7 @@
 k3d cluster create asciiartify \
   --servers 1 \
   --agents 2 \
-  -p "8080:80@loadbalancer"
+  -p "30080:80@loadbalancer"
 
 ### Перевірка стану
 kubectl get nodes
@@ -82,11 +84,58 @@ kubectl expose deployment hello --port=80 --type=ClusterIP
 ### Зміна типу сервісу на LoadBalancer
 kubectl patch svc hello -p '{"spec": {"type": "LoadBalancer"}}'
 
-### Перевірка
-curl http://localhost:8080
 
-Очікуваний результат:
-Welcome to nginx!
+
+
+
+### Створення Ingress
+kubectl apply -f - <<'EOF'
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hello
+            port:
+              number: 80
+
+kubectl get ingress
+
+
+### Перевірка
+curl http://localhost:30080
+
+### Очікуваний результат:
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
 
 ---
 
