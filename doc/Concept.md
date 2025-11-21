@@ -68,27 +68,31 @@
 🔗 https://k3d.io/v5.6.0/#releases
 
 ### Створення кластера
+```bash
 k3d cluster create asciiartify \
   --servers 1 \
   --agents 2 \
   -p "30080:80@loadbalancer"
-
+```
 ### Перевірка стану
+```bash
 kubectl get nodes
+
 kubectl get pods -A
-
+```
 ### Деплой “Hello World”
+```bash
 kubectl create deployment hello --image=nginx:alpine
+
 kubectl expose deployment hello --port=80 --type=ClusterIP
-
+```
 ### Зміна типу сервісу на LoadBalancer
+```bash
 kubectl patch svc hello -p '{"spec": {"type": "LoadBalancer"}}'
-
-
-
-
-
+```
 ### Створення Ingress
+```bash
+
 kubectl apply -f - <<'EOF'
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -105,14 +109,16 @@ spec:
             name: hello
             port:
               number: 80
+EOF
 
 kubectl get ingress
-
-
+```
 ### Перевірка
+```bash
 curl http://localhost:30080
-
+```
 ### Очікуваний результат:
+```bash
 <!DOCTYPE html>
 <html>
 <head>
@@ -136,6 +142,7 @@ Commercial support is available at
 <p><em>Thank you for using nginx.</em></p>
 </body>
 </html>
+```
 
 ---
 
