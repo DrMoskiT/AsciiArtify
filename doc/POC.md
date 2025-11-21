@@ -120,28 +120,9 @@ kubectl -n argocd get secret argocd-initial-admin-secret \
 
 ---
 
-## 5. (Опційно) Логін через Argo CD CLI
+## 5. Troubleshooting (типові проблеми)
 
-Якщо потрібно керувати Argo CD з CLI:
-
-```bash
-argocd login localhost:8443 \
-  --username admin \
-  --password <PASSWORD> \
-  --insecure
-```
-
-Перевірка:
-
-```bash
-argocd account get-user-info
-```
-
----
-
-## 6. Troubleshooting (типові проблеми)
-
-### 6.1 Порт зайнятий
+### 5.1 Порт зайнятий
 
 Якщо бачиш `address already in use`, візьми інший порт, наприклад 9443:
 
@@ -151,12 +132,12 @@ kubectl port-forward --address 0.0.0.0 svc/argocd-server -n argocd 9443:443
 
 Відкривай у браузері відповідний порт у вкладці **Ports**.
 
-### 6.2 404 у браузері
+### 5.2 404 у браузері
 
 Причина майже завжди в тому, що відкрили **HTTP** порт замість **HTTPS**.  
 Переконайся, що port-forward саме `8443:443`, і URL у браузері починається з `https://`.
 
-### 6.3 Пода `argocd-server` ще не Ready
+### 5.3 Пода `argocd-server` ще не Ready
 
 Почекай і перевір знову:
 
@@ -175,4 +156,5 @@ kubectl describe pod -n argocd -l app.kubernetes.io/name=argocd-server
 
 Файл підготовлено для репозиторію:  
 `doc/POC.md`
+
 
